@@ -1,0 +1,29 @@
+.container {
+    width: 80%;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.input-area {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+textarea {
+    width: 60%;
+    height: 150px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    padding: 10px 20px;
+    margin-left: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
