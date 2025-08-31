@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ProxifierProfile version="102" platform="Windows" product_id="0" product_minver="400">
+	<Options>
+		<Resolve>
+			<AutoModeDetection enabled="true" />
+			<ViaProxy enabled="false" />
+			<BlockNonATypes enabled="false" />
+			<ExclusionList OnlyFromListMode="false">%ComputerName%; localhost; *.local</ExclusionList>
+			<DnsUdpMode>0</DnsUdpMode>
+		</Resolve>
+		<Encryption mode="disabled" />
+		<ConnectionLoopDetection enabled="true" resolve="true" />
+		<Udp mode="mode_bypass" />
+		<LeakPreventionMode enabled="false" />
+		<ProcessOtherUsers enabled="false" />
+		<ProcessServices enabled="false" />
+		<HandleDirectConnections enabled="false" />
+		<HttpProxiesSupport enabled="false" />
+	</Options>
+	<ProxyList>
+		<Proxy id="100" type="SOCKS5">
+			<Options>48</Options>
+			<Port>7890</Port>
+			<Address>172.168.10.40</Address>
+		</Proxy>
+		<Proxy id="101" type="SOCKS5">
+			<Options>48</Options>
+			<Port>4545</Port>
+			<Address>officexiaonei.ddns.net</Address>
+		</Proxy>
+		<Proxy id="102" type="SOCKS5">
+			<Options>48</Options>
+			<Port>7890</Port>
+			<Address>127.0.0.1</Address>
+		</Proxy>
+		<Proxy id="103" type="SOCKS5">
+			<Options>48</Options>
+			<Port>7890</Port>
+			<Address>172.168.20.24</Address>
+		</Proxy>
+	</ProxyList>
+	<ChainList />
+	<RuleList>
+		<Rule enabled="true">
+			<Action type="Direct" />
+			<Targets>localhost;%ComputerName%; ::1;</Targets>
+			<Name>Localhost</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Direct" />
+			<Applications>mstsc.exe;clash-win64.exe;chrome.exe</Applications>
+			<Name>passapp</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Block" />
+			<Targets>120.79.10.37;120.79.10.37;51.195.140.190;47.52.139.94;47.242.86.30;8.210.247.214;*.eagle.cool;*.pilgway.com;install3dcoat.*.*;*.eagle.cool</Targets>
+			<Name>blockurl</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Block" />
+			<Targets>127.0.0.1;</Targets>
+			<Applications>eagle.exe;3dcoatgl64.exe;3dcoat.exe;vrol.exe;"cinema 4d.exe";fjava.exe</Applications>
+			<Name>blockapp</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Proxy">102</Action>
+			<Targets>*.githubusercontent.com;*.github.com</Targets>
+			<Name>proxyurl</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Proxy">102</Action>
+			<Applications>githubdesktop.exe;fusion.exe;fusion.exe;node.exe;electron-fiddle.exe;git-remote-https.exe;Tower.exe;python.exe;svchost.exe</Applications>
+			<Name>proxyapp</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Direct" />
+			<Name>Default</Name>
+		</Rule>
+	</RuleList>
+</ProxifierProfile>

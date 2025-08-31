@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 
 const password = ref('Loading...')
 const timeLeft = ref(20)
+const downloads = ref([])
 
 // Function to fetch the password from the backend API
 async function fetchPassword() {
@@ -19,6 +20,21 @@ async function fetchPassword() {
   }
 }
 
+// Function to fetch available downloads
+async function fetchDownloads() {
+  try {
+    const response = await fetch('/api/downloads')
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
+    }
+    const data = await response.json()
+    downloads.value = data.files
+  } catch (error) {
+    console.error('There has been a problem with your fetch operation:', error)
+    downloads.value = []
+  }
+}
+
 // Function to handle the countdown timer
 function startTimer() {
   setInterval(() => {
@@ -31,9 +47,10 @@ function startTimer() {
   }, 1000)
 }
 
-// Fetch password and start timer when the component is first mounted
+// Fetch password and downloads, start timer when the component is first mounted
 onMounted(() => {
   fetchPassword()
+  fetchDownloads()
   startTimer()
 })
 
@@ -55,6 +72,16 @@ function manualRefresh() {
     <div class="download-link">
         <a href="/auth/auth.txt" download>Download auth.txt</a>
     </div>
+    
+    <div class="downloads-section" v-if="downloads.length > 0">
+      <h2>Available Downloads</h2>
+      <ul class="downloads-list">
+        <li v-for="file in downloads" :key="file.name">
+          <a :href="`/downloads/${file.name}`" :download="file.name">{{ file.name }}</a>
+          <span class="file-size">({{ Math.ceil(file.size / 1024) }} KB)</span>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -64,9 +91,12 @@ function manualRefresh() {
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
 }
 
-h1 {
+h1, h2 {
   color: #2c3e50;
   margin-bottom: 0;
 }
@@ -78,6 +108,7 @@ h1 {
   border: 1px solid #bdc3c7;
   width: 100%;
   box-sizing: border-box;
+  text-align: center;
 }
 
 .password-display code {
@@ -112,16 +143,35 @@ button:hover {
   background-color: #2980b9;
 }
 
-.download-link {
+.download-link, .downloads-section {
     margin-top: 1rem;
+    width: 100%;
 }
 
-.download-link a {
+.download-link a, .downloads-list a {
     color: #3498db;
     text-decoration: none;
 }
 
-.download-link a:hover {
+.download-link a:hover, .downloads-list a:hover {
     text-decoration: underline;
+}
+
+.downloads-list {
+  list-style-type: none;
+  padding: 0;
+  width: 100%;
+}
+
+.downloads-list li {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.file-size {
+  color: #7f8c8d;
+  font-size: 0.9rem;
 }
 </style>

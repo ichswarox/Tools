@@ -1,6 +1,6 @@
 # AuthOnlineTXT
 
-一个简单的在线密码生成和分发系统，具有自动刷新功能和基本身份验证保护。
+一个简单的在线密码生成和分发系统，具有自动刷新功能和基本身份验证保护，同时支持文件下载功能。
 
 ## 功能特点
 
@@ -11,7 +11,8 @@
    - API接口：`http://localhost:3009/api/password` (返回JSON格式)
    - 文本文件下载：`http://localhost:3009/auth/auth.txt`
 4. **身份验证保护**：Web界面需要基本身份验证保护
-5. **自动下载**：提供密码文件的直接下载链接
+5. **文件下载**：支持上传文件供用户下载
+6. **自动下载**：提供密码文件的直接下载链接
 
 ## 技术栈
 
@@ -101,6 +102,8 @@ AuthOnlineTXT/
 ├── README.md              # 项目说明文档
 ├── package.json           # 后端依赖配置
 ├── package-lock.json
+├── downloads/             # 用户可下载的文件目录
+│   └── example.txt        # 示例下载文件
 ├── frontend/              # 前端Vue项目
 │   ├── src/
 │   │   ├── App.vue        # 主页面组件
@@ -118,6 +121,8 @@ AuthOnlineTXT/
 | `/` | GET | Web界面（需要身份验证） |
 | `/api/password` | GET | 获取当前密码（JSON格式） |
 | `/auth/auth.txt` | GET | 下载密码文本文件 |
+| `/api/downloads` | GET | 获取可下载文件列表（JSON格式） |
+| `/downloads/*` | GET | 访问下载目录中的文件 |
 | `/*` | GET | 其他路由重定向到主页面 |
 
 ## 安全说明
@@ -134,6 +139,29 @@ AuthOnlineTXT/
 2. **自动刷新间隔**：修改 `setInterval()` 中的时间值（单位为毫秒）
 3. **界面样式**：修改 `frontend/src/App.vue` 中的样式部分
 4. **身份验证凭据**：如上所述修改用户名和密码
+5. **添加下载文件**：将文件添加到 `downloads/` 目录中，它们将自动在Web界面中显示并可供下载
+
+## 文件下载功能
+
+本系统支持文件下载功能：
+
+1. 将需要提供下载的文件放入 `downloads/` 目录
+2. 文件将自动在Web界面的"Available Downloads"部分显示
+3. 用户可以点击文件名直接下载
+
+### 添加下载文件的步骤：
+
+1. 将文件复制到项目目录下的 `downloads/` 文件夹中
+2. 确保文件权限正确（可读）
+3. 重启服务器（可选，文件会自动被检测到）
+
+### 访问下载文件：
+
+1. **通过Web界面**：访问主页面，滚动到"Available Downloads"部分
+2. **直接访问**：使用 `http://localhost:3009/downloads/filename.ext` 直接下载文件
+3. **API接口**：访问 `http://localhost:3009/api/downloads` 获取文件列表的JSON数据
+
+注意：下载目录中的文件是公开可访问的，不需要身份验证。
 
 ## 故障排除
 

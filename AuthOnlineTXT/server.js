@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const app = express();
 const PORT = 3009;
 
@@ -71,10 +72,39 @@ app.get('/auth/auth.txt', (req, res) => {
     res.end();
 });
 
-// Apply authentication middleware to all routes except API endpoints
+// API endpoint to list available downloads
+app.get('/api/downloads', (req, res) => {
+    const downloadsDir = path.join(__dirname, 'downloads');
+    
+    fs.readdir(downloadsDir, (err, files) => {
+        if (err) {
+            return res.status(500).json({ error: 'Failed to list downloads' });
+        }
+        
+        // Filter out directories, only include files
+        const fileDetails = files.filter(file => {
+            return fs.statSync(path.join(downloadsDir, file)).isFile();
+        }).map(file => {
+            const filePath = path.join(downloadsDir, file);
+            const stats = fs.statSync(filePath);
+            return {
+                name: file,
+                size: stats.size,
+                modified: stats.mtime
+            };
+        });
+        
+        res.json({ files: fileDetails });
+    });
+});
+
+// Serve static files from the downloads directory (publicly accessible)
+app.use('/downloads', express.static(path.join(__dirname, 'downloads')));
+
+// Apply authentication middleware to all routes except API endpoints and downloads
 app.use((req, res, next) => {
-    // Skip authentication for API endpoints
-    if (req.path.startsWith('/api/') || req.path.startsWith('/auth/')) {
+    // Skip authentication for API endpoints and downloads
+    if (req.path.startsWith('/api/') || req.path.startsWith('/auth/') || req.path.startsWith('/downloads/')) {
         return next();
     }
     // Apply authentication to all other routes
