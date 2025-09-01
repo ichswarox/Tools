@@ -2,8 +2,10 @@
 import { ref, onMounted } from 'vue'
 
 const password = ref('Loading...')
-const timeLeft = ref(20)
+const timeLeft = ref(30)
 const downloads = ref([])
+let timer = null
+let nextRefreshTime = Date.now() + 30000
 
 // Function to fetch the password from the backend API
 async function fetchPassword() {
@@ -14,6 +16,8 @@ async function fetchPassword() {
     }
     const data = await response.json()
     password.value = data.password
+    // Update the next refresh time
+    nextRefreshTime = data.nextRefresh
   } catch (error) {
     console.error('There has been a problem with your fetch operation:', error)
     password.value = 'Failed to load'
@@ -37,12 +41,19 @@ async function fetchDownloads() {
 
 // Function to handle the countdown timer
 function startTimer() {
-  setInterval(() => {
-    if (timeLeft.value > 1) {
-      timeLeft.value--
-    } else {
+  // Clear any existing timer
+  if (timer) {
+    clearInterval(timer)
+  }
+  
+  timer = setInterval(() => {
+    // Calculate time left based on next refresh time
+    const timeRemaining = Math.floor((nextRefreshTime - Date.now()) / 1000)
+    timeLeft.value = Math.max(0, timeRemaining)
+    
+    // If time has expired, fetch new password
+    if (timeRemaining <= 0) {
       fetchPassword()
-      timeLeft.value = 20
     }
   }, 1000)
 }
@@ -57,7 +68,6 @@ onMounted(() => {
 // Manual refresh function
 function manualRefresh() {
     fetchPassword();
-    timeLeft.value = 20;
 }
 </script>
 
