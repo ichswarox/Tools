@@ -67,7 +67,11 @@ onMounted(() => {
 
 // Manual refresh function
 function manualRefresh() {
-    fetchPassword();
+    fetchPassword().then(() => {
+        // Reset the timer when manually refreshing
+        nextRefreshTime = Date.now() + 30000;
+        timeLeft.value = 30;
+    });
 }
 </script>
 
