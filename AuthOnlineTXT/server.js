@@ -23,8 +23,8 @@ const auth = (req, res, next) => {
     .split(':');
   
   // 设置您的用户名和密码
-  const validUsername = 'admin';
-  const validPassword = 'password123';
+  const validUsername = 'neoxu';
+  const validPassword = 'ADy8Y';
   
   if (username === validUsername && password === validPassword) {
     next();
