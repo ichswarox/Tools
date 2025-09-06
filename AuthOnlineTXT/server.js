@@ -49,11 +49,11 @@ function generatePassword() {
     return result;
 }
 
-// Generate a new password every 30 seconds
+// Generate a new password every 120 seconds
 setInterval(() => {
     currentPassword = generatePassword();
     lastPasswordChange = Date.now();
-}, 30000);
+}, 120000);
 
 // Initial password generation
 currentPassword = generatePassword();
