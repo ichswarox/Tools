@@ -36,6 +36,7 @@ const auth = (req, res, next) => {
 
 let currentPassword = '';
 let lastPasswordChange = Date.now();
+const PASSWORD_REFRESH_INTERVAL = 120000; // 120 seconds
 
 // Function to generate a random alphanumeric password
 function generatePassword() {
@@ -53,7 +54,7 @@ function generatePassword() {
 setInterval(() => {
     currentPassword = generatePassword();
     lastPasswordChange = Date.now();
-}, 120000);
+}, PASSWORD_REFRESH_INTERVAL);
 
 // Initial password generation
 currentPassword = generatePassword();
@@ -62,7 +63,18 @@ lastPasswordChange = Date.now();
 // API endpoint to get the current password as JSON
 app.get('/api/password', (req, res) => {
     // Return the current password and next refresh time
-    const nextRefresh = lastPasswordChange + 30000;
+    const nextRefresh = lastPasswordChange + PASSWORD_REFRESH_INTERVAL;
+    res.json({ 
+        password: currentPassword,
+        nextRefresh: nextRefresh
+    });
+});
+
+// API endpoint to manually refresh the password
+app.post('/api/password/refresh', (req, res) => {
+    currentPassword = generatePassword();
+    lastPasswordChange = Date.now();
+    const nextRefresh = lastPasswordChange + PASSWORD_REFRESH_INTERVAL;
     res.json({ 
         password: currentPassword,
         nextRefresh: nextRefresh

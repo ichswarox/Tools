@@ -2,10 +2,10 @@
 import { ref, onMounted } from 'vue'
 
 const password = ref('Loading...')
-const timeLeft = ref(30)
+const timeLeft = ref(120)
 const downloads = ref([])
 let timer = null
-let nextRefreshTime = Date.now() + 30000
+let nextRefreshTime = Date.now() + 120000
 
 // Function to fetch the password from the backend API
 async function fetchPassword() {
@@ -66,12 +66,24 @@ onMounted(() => {
 })
 
 // Manual refresh function
-function manualRefresh() {
-    fetchPassword().then(() => {
-        // Reset the timer when manually refreshing
-        nextRefreshTime = Date.now() + 30000;
-        timeLeft.value = 30;
-    });
+async function manualRefresh() {
+    try {
+        const response = await fetch('/api/password/refresh', {
+            method: 'POST'
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        password.value = data.password;
+        // Update the next refresh time
+        nextRefreshTime = data.nextRefresh;
+        // Restart the timer with the new next refresh time
+        startTimer();
+    } catch (error) {
+        console.error('There has been a problem with your fetch operation:', error);
+        password.value = 'Failed to load';
+    }
 }
 </script>
 
