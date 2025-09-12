@@ -5,7 +5,7 @@ import time
 
 # --- 配置 ---
 # 你要将文件复制到的目标目录
-DEST_DIR = "/Users/Apple/Documents/GitHub/NotionNext/docusaurus/Resources/static/img"
+DEST_DIR = "/Users/Apple/Documents/GitHub/跨境全链路/docusaurus/Resources/static/img"
 # --- 配置结束 ---
 
 def main():
